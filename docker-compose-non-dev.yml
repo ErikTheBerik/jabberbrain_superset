@@ -21,7 +21,9 @@ x-superset-depends-on: &superset-depends-on
 x-superset-volumes:
   &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   - ./docker:/app/docker
+  - ./docker/assets:/app/superset/static/jb_assets
   - superset_home:/app/superset_home
+  - ./superset:/app/superset
 
 version: "3.7"
 services:
@@ -33,7 +35,11 @@ services:
       - redis:/data
 
   db:
-    env_file: docker/.env-non-dev
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     image: postgres:15
     container_name: superset_db
     restart: unless-stopped
@@ -41,8 +47,27 @@ services:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
+  drill:
+    container_name: drill
+    image: apache/drill:latest
+    ports:
+      - 8047:8047
+      - 31010:31010
+    restart: unless-stopped
+    stdin_open: true
+    volumes:
+      - drill_data:/data
+      # - ./drill-override.conf:/opt/drill/conf/drill-override.conf
+    environment:
+      - DRILL_LOG_DIR=/data
+      - DRILL_TMP_DIR=/data
+      
   superset:
-    env_file: docker/.env-non-dev
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     image: *superset-image
     container_name: superset_app
     command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
@@ -57,7 +82,11 @@ services:
     image: *superset-image
     container_name: superset_init
     command: ["/app/docker/docker-init.sh"]
-    env_file: docker/.env-non-dev
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     depends_on: *superset-depends-on
     user: "root"
     volumes: *superset-volumes
@@ -68,7 +97,11 @@ services:
     image: *superset-image
     container_name: superset_worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
-    env_file: docker/.env-non-dev
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"
@@ -84,7 +117,11 @@ services:
     image: *superset-image
     container_name: superset_worker_beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
-    env_file: docker/.env-non-dev
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: "root"
@@ -99,3 +136,5 @@ volumes:
     external: false
   redis:
     external: false
+  drill_data:
+    driver: local
