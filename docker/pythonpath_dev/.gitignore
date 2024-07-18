@@ -21,3 +21,6 @@
 !.gitignore
 !superset_config.py
 !superset_config_local.example
+
+# Include our custom configuration
+!superset_config_docker.py
