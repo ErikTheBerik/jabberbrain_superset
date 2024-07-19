@@ -12,6 +12,10 @@ FEATURE_FLAGS : dict[str, bool] = {
     "HORIZONTAL_FILTER_BAR": True
 }
 
+ENABLE_PROXY_FIX = False
+WTF_CSRF_ENABLED = False
+TALISMAN_ENABLED = False
+
 # Custom security manager
 import logging
 from superset.custom.security import CustomSecurityManager
