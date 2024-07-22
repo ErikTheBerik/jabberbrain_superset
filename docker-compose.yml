@@ -57,7 +57,7 @@ services:
     stdin_open: true
     volumes:
       - drill_data:/data
-      # - ./drill-override.conf:/opt/drill/conf/drill-override.conf
+      - ./drill-override.conf:/opt/drill/conf/drill-override.conf
     environment:
       - DRILL_LOG_DIR=/data
       - DRILL_TMP_DIR=/data
