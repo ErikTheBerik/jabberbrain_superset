@@ -24,6 +24,7 @@ x-superset-volumes: &superset-volumes
   - ./docker:/app/docker
   - ./superset:/app/superset
   - ./superset-frontend:/app/superset-frontend
+  - ./docker/assets:/app/superset/static/jb_assets
   - superset_home:/app/superset_home
   - ./tests:/app/tests
 
@@ -34,7 +35,7 @@ services:
     container_name: superset_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "81:80"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -49,7 +50,11 @@ services:
       - redis:/data
 
   db:
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     image: postgres:15
     container_name: superset_db
     restart: unless-stopped
@@ -60,7 +65,11 @@ services:
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   superset:
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     image: *superset-image
     container_name: superset_app
     command: ["/app/docker/docker-bootstrap.sh", "app"]
@@ -74,6 +83,21 @@ services:
     volumes: *superset-volumes
     environment:
       CYPRESS_CONFIG: "${CYPRESS_CONFIG}"
+
+  drill:
+    container_name: drill
+    image: apache/drill:latest
+    ports:
+      - 8047:8047
+      - 31010:31010
+    restart: unless-stopped
+    stdin_open: true
+    volumes:
+      - drill_data:/data
+      # - ./drill-override.conf:/opt/drill/conf/drill-override.conf
+    environment:
+      - DRILL_LOG_DIR=/data
+      - DRILL_TMP_DIR=/data
 
   superset-websocket:
     container_name: superset_websocket
@@ -109,7 +133,11 @@ services:
     image: *superset-image
     container_name: superset_init
     command: ["/app/docker/docker-init.sh"]
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     depends_on: *superset-depends-on
     user: *superset-user
     volumes: *superset-volumes
@@ -122,7 +150,11 @@ services:
     image: node:16
     container_name: superset_node
     command: ["/app/docker/docker-frontend.sh"]
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     depends_on: *superset-depends-on
     environment:
       SCARF_ANALYTICS: "${SCARF_ANALYTICS}"
@@ -132,7 +164,11 @@ services:
     image: *superset-image
     container_name: superset_worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: *superset-user
@@ -149,7 +185,11 @@ services:
     image: *superset-image
     container_name: superset_worker_beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: *superset-user
@@ -161,7 +201,11 @@ services:
     image: *superset-image
     container_name: superset_tests_worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
-    env_file: docker/.env
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
     environment:
       DATABASE_HOST: localhost
       DATABASE_DB: test
@@ -182,3 +226,5 @@ volumes:
     external: false
   redis:
     external: false
+  drill_data:
+    driver: local
