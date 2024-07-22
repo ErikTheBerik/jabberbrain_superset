@@ -1,5 +1,4 @@
 import logging
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from superset.security.manager import SupersetSecurityManager
 from superset.custom.models import CustomUser

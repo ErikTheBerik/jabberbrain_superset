@@ -5,6 +5,7 @@ APP_NAME = "Jabberbrain Dashboards"
 
 # Specify the App icon
 APP_ICON = "/static/jb_assets/images/jb-logo-horiz.png"
+LOGO_TARGET_PATH = "/"
 
 FEATURE_FLAGS : dict[str, bool] = {
     "DASHBOARD_RBAC": True,
@@ -15,8 +16,12 @@ FEATURE_FLAGS : dict[str, bool] = {
 # Custom security manager
 import logging
 from superset.custom.security import CustomSecurityManager
+from superset.custom.views import CustomIndexView
 from flask import g
+
 CUSTOM_SECURITY_MANAGER=CustomSecurityManager
+FAB_INDEX_VIEW = f"{CustomIndexView.__module__}.{CustomIndexView.__name__}"
+
 
 log = logging.getLogger(__name__)
 
