@@ -15,15 +15,18 @@ FEATURE_FLAGS : dict[str, bool] = {
 
 # Custom security manager
 import logging
+import os
 from superset.custom.security import CustomSecurityManager
 from superset.custom.views import CustomIndexView
 from flask import g
 
+log = logging.getLogger(__name__)
+
 CUSTOM_SECURITY_MANAGER=CustomSecurityManager
 FAB_INDEX_VIEW = f"{CustomIndexView.__module__}.{CustomIndexView.__name__}"
 
-
-log = logging.getLogger(__name__)
+GOOGLE_TAG_ID = os.getenv("GOOGLE_TAG_ID") or "no_google_id"
+log.info("Google tag is: ", GOOGLE_TAG_ID)
 
 # Custom macros
 def current_user_solution_uuid():
