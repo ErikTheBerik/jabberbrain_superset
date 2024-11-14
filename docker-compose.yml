@@ -61,6 +61,18 @@ services:
     environment:
       - DRILL_LOG_DIR=/data
       - DRILL_TMP_DIR=/data
+
+  trino:
+    container_name: trino
+    image: trinodb/trino:latest
+    restart: unless-stopped
+    ports:
+      - "8050:8080" 
+    volumes:
+      - ./catalog:/etc/trino/catalog
+      - ./etc-trino/config.properties:/etc/trino/config.properties
+      - ./etc-trino/password-authenticator.properties:/etc/trino/password-authenticator.properties
+      - ./etc-trino/password.db:/etc/trino/password.db
       
   superset:
     env_file:

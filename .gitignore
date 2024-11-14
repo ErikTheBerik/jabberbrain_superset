@@ -111,3 +111,5 @@ messages.mo
 
 cache/
 docker/.env-local
+catalog/*.properties
+etc-trino/config.properties
