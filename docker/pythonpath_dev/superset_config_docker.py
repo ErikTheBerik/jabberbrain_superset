@@ -2,6 +2,7 @@ AUTH_ROLE_PUBLIC = 'Public'
 PUBLIC_ROLE_LIKE = 'Public'
 FAB_API_SWAGGER_UI = False
 APP_NAME = "Jabberbrain Dashboards"
+ENABLE_PROXY_FIX = True
 
 # Specify the App icon
 APP_ICON = "/static/jb_assets/images/jb-logo-horiz.png"
