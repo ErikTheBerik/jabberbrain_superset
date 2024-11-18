@@ -5,8 +5,9 @@ APP_NAME = "Jabberbrain Dashboards"
 ENABLE_PROXY_FIX = True
 
 # Specify the App icon
-APP_ICON = "/static/jb_assets/images/jb-logo-horiz.png"
+APP_ICON = "/static/jb_assets/images/jB_logo_blue.svg"
 LOGO_TARGET_PATH = "/"
+FAVICONS = [{"href": "/static/jb_assets/images/jB_icon_blue.svg"}]
 
 FEATURE_FLAGS : dict[str, bool] = {
     "DASHBOARD_RBAC": True,
