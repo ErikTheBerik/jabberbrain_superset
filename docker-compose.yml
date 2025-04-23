@@ -47,20 +47,20 @@ services:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
-  drill:
-    container_name: drill
-    image: apache/drill:latest
-    ports:
-      - 8047:8047
-      - 31010:31010
-    restart: unless-stopped
-    stdin_open: true
-    volumes:
-      - drill_data:/data
-      - ./drill-override.conf:/opt/drill/conf/drill-override.conf
-    environment:
-      - DRILL_LOG_DIR=/data
-      - DRILL_TMP_DIR=/data
+  # drill:
+  #   container_name: drill
+  #   image: apache/drill:latest
+  #   ports:
+  #     - 8047:8047
+  #     - 31010:31010
+  #   restart: unless-stopped
+  #   stdin_open: true
+  #   volumes:
+  #     - drill_data:/data
+  #     - ./drill-override.conf:/opt/drill/conf/drill-override.conf
+  #   environment:
+  #     - DRILL_LOG_DIR=/data
+  #     - DRILL_TMP_DIR=/data
 
   trino:
     container_name: trino
@@ -146,5 +146,5 @@ volumes:
     external: false
   redis:
     external: false
-  drill_data:
-    driver: local
+  # drill_data:
+  #   driver: local
