@@ -69,10 +69,8 @@ services:
     ports:
       - "8050:8080" 
     volumes:
+      - ./etc-trino:/etc/trino
       - ./catalog:/etc/trino/catalog
-      - ./etc-trino/config.properties:/etc/trino/config.properties
-      - ./etc-trino/password-authenticator.properties:/etc/trino/password-authenticator.properties
-      - ./etc-trino/password.db:/etc/trino/password.db
       
   superset:
     env_file:
