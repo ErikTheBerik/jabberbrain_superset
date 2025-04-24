@@ -80,7 +80,7 @@ services:
         required: false
 
   hive-metastore:
-    image: apache/hive:latest
+    image: apache/hive:4.0.1
     environment:
       HIVE_METASTORE_DB_HOST: metastore-db
       HIVE_METASTORE_DB_NAME: metastore
@@ -90,6 +90,11 @@ services:
       - "9083:9083"
     depends_on:
       - metastore-db
+    env_file:
+      - path: docker/.env
+        required: true
+      - path: docker/.env-local
+        required: false
       
   superset:
     env_file:
