@@ -85,7 +85,7 @@ services:
 
   hive-metastore:
     container_name: hive-metastore
-    image: trinodb/hive-metastore:latest
+    image: apache/hive
     depends_on: [metastore-db]
     environment:
       HIVE_METASTORE_DB_TYPE: mysql
