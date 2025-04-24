@@ -10,7 +10,6 @@ x-superset-volumes:
   - superset_home:/app/superset_home
   - ./superset:/app/superset
 
-version: "3.7"
 services:
   redis:
     image: redis:7
