@@ -49,7 +49,7 @@ services:
     image: trinodb/trino:latest
     depends_on:
       - trino
-      - hive-metastore
+      - hivemetastore
     entrypoint: ["/bin/sh", "-c"]
     command: 
       - sh
@@ -86,7 +86,7 @@ services:
       - path: docker/.env-local
         required: false
 
-  hive-metastore:
+  hivemetastore:
     image: apache/hive:4.0.1
     environment:
       HIVE_METASTORE_DB_HOST: metastore-db
