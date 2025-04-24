@@ -50,14 +50,16 @@ services:
     image: trinodb/trino:latest
     depends_on:
       - trino
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
+    entrypoint:
+    - /bin/sh
+    - -c
+    - |
       until trino --server trino:8080 --execute "SELECT 1" >/dev/null 2>&1; do
-          echo "Waiting for Trino to be ready..."
-          sleep 2
-        done
-        echo "Initializing Trino..."
-        trino --server trino:8080 -f /etc/trino/init.sql
+        echo "Waiting for Trino to be ready..."
+        sleep 2
+      done
+      echo "Initializing Trino..."
+      trino --server trino:8080 -f /etc/trino/init.sql
     volumes:
       - ./etc-trino:/etc/trino
     env_file:
