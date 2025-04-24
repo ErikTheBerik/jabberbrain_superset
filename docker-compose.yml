@@ -46,6 +46,7 @@ services:
       - ./etc-trino:/etc/trino
 
   trino-init:
+    container_name: trino_init
     image: trinodb/trino:latest
     depends_on:
       - trino
@@ -71,7 +72,8 @@ services:
       - path: docker/.env-local
         required: false
 
-  metastore-db:
+  metastoredb:
+    container_name: metastoredb
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -87,6 +89,7 @@ services:
         required: false
 
   hivemetastore:
+    container_name: hivemetastore
     image: apache/hive:4.0.1
     environment:
       HIVE_METASTORE_DB_HOST: metastore-db
@@ -96,7 +99,7 @@ services:
     ports:
       - "9083:9083"
     depends_on:
-      - metastore-db
+      - metastoredb
       
   superset:
     env_file:
