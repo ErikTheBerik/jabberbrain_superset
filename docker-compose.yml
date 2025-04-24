@@ -72,36 +72,15 @@ services:
   #     - path: docker/.env-local
   #       required: false
 
-  metastore-db:
-    image: mysql:8
+  hive-metastore-db:
+    image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: metastore
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: hive_metastore
+      MYSQL_USER: hive
+      MYSQL_PASSWORD: hivepass
     volumes:
-      - hive-metastore-db:/var/lib/mysql
-
-  # Hive Metastore service
-  hive-metastore:
-    image: apache/hive:3.1.3
-    depends_on:
-      - metastore-db
-    environment:
-      HIVE_METASTORE_DB_TYPE: mysql
-      HIVE_METASTORE_HOST: metastore-db
-      HIVE_METASTORE_PORT: 3306
-      HIVE_METASTORE_DB_NAME: metastore
-      HIVE_METASTORE_USERNAME: root
-      HIVE_METASTORE_PASSWORD: secret
-      # warehouse dir for your tables/views
-      HIVE_METASTORE_WAREHOUSE_DIR: /user/hive/warehouse
-    # Explicitly start the metastore service (instead of the default CLI)
-    command: ["hive", "--service", "metastore"]
-    ports:
-      - "9083:9083"
-    healthcheck:
-      test: ["CMD", "nc", "-vz", "0.0.0.0", "9083"]
-      interval: 10s
-      retries: 5
+      - hive-metastore-data:/var/lib/mysql
       
   superset:
     env_file:
@@ -177,5 +156,5 @@ volumes:
     external: false
   redis:
     external: false
-  hive-metastore-db:
+  hive-metastore-data:
     external: false
