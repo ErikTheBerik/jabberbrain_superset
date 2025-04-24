@@ -53,7 +53,10 @@ services:
       - hive-metastore
     entrypoint: ["/bin/sh", "-c"]
     command: >
-      "until trino --execute 'SELECT 1'; do echo 'Waiting for Trino...'; sleep 3; done &&
+      "until trino --server http://trino:8080 --execute 'SELECT 1'; do
+      echo 'Waiting for Trino...';
+      sleep 3;
+      done &&
       trino --server http://trino:8080 --catalog hive --schema default --file /etc/trino/init.sql"
     volumes:
       - ./etc-trino:/etc/trino
