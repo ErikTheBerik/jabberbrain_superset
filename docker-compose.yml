@@ -47,17 +47,22 @@ services:
 
   trino-init:
     image: trinodb/trino:latest
-    container_name: trino_init
     depends_on:
       - trino
       - hive-metastore
     entrypoint: ["/bin/sh", "-c"]
-    command: >
-      "until trino --server http://trino:8080 --execute 'SELECT 1'; do
-      echo 'Waiting for Trino...';
-      sleep 3;
-      done &&
-      trino --server http://trino:8080 --catalog hive --schema default --file /etc/trino/init.sql"
+    command: 
+      - sh
+      - -c
+      - |
+        # Wait for Trino to be ready (after healthcheck)
+        until trino --server trino:8080 --execute "SELECT 1" >/dev/null 2>&1; do
+          echo "Waiting for Trino to be ready..."
+          sleep 2
+        done
+        # Execute SQL script
+        echo "Initializing Trino..."
+        trino --server trino:8080 -f /etc/trino/init.sql
     volumes:
       - ./etc-trino:/etc/trino
     env_file:
