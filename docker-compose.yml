@@ -67,10 +67,10 @@ services:
   metastore-db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: ${METASTORE_DB_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: metastore
-      MYSQL_USER: ${METASTORE_DB_USER}
-      MYSQL_PASSWORD: ${METASTORE_DB_PASSWORD}
+      MYSQL_USER: metastore
+      MYSQL_PASSWORD: metastore
     volumes:
       - metastore_data:/var/lib/mysql
     env_file:
@@ -84,17 +84,12 @@ services:
     environment:
       HIVE_METASTORE_DB_HOST: metastore-db
       HIVE_METASTORE_DB_NAME: metastore
-      HIVE_METASTORE_DB_USER: ${HIVE_METASTORE_DB_USER}
-      HIVE_METASTORE_DB_PASSWORD: ${HIVE_METASTORE_DB_PASSWORD}
+      HIVE_METASTORE_DB_USER: metastore
+      HIVE_METASTORE_DB_PASSWORD: metastore
     ports:
       - "9083:9083"
     depends_on:
       - metastore-db
-    env_file:
-      - path: docker/.env
-        required: true
-      - path: docker/.env-local
-        required: false
       
   superset:
     env_file:
