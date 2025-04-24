@@ -1,7 +1,7 @@
 -- 1) Unified transactions+logs
-CREATE SCHEMA IF NOT EXISTS hive.views;
+CREATE SCHEMA IF NOT EXISTS memory.views;
 
-CREATE OR REPLACE VIEW hive.views.transaction_data AS
+CREATE OR REPLACE VIEW memory.views.transaction_data AS
 SELECT
   s._id AS session_id,
   s."SolutionId" as session_solution_id,
@@ -46,10 +46,10 @@ LEFT JOIN prod.session_engine_logs."LoggedTransactionData" AS l
   ON t."RelatedDataId" = l._id;
 
 -- 2) Join on MySQL feedback (NULL means “no feedback yet”)
-CREATE OR REPLACE VIEW hive.views.transaction_with_feedback AS
+CREATE OR REPLACE VIEW memory.views.transaction_with_feedback AS
 SELECT
   td.*,
   tf.*
-FROM hive.views.transaction_data AS td
+FROM memory.views.transaction_data AS td
 LEFT JOIN jb.jbdb.chat_transaction_audit AS tf
   ON tf.jbse_chat_transaction_id = td.transaction_id;

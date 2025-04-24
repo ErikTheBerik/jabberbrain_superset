@@ -45,69 +45,31 @@ services:
     volumes:
       - ./etc-trino:/etc/trino
 
-  # trino-init:
-  #   container_name: trino_init
-  #   image: trinodb/trino:latest
-  #   depends_on:
-  #     - trino
-  #     - hivemetastore
-  #   entrypoint: ["/bin/sh", "-c"]
-  #   command: 
-  #     - sh
-  #     - -c
-  #     - |
-  #       # Wait for Trino to be ready (after healthcheck)
-  #       until trino --server trino:8080 --execute "SELECT 1" >/dev/null 2>&1; do
-  #         echo "Waiting for Trino to be ready..."
-  #         sleep 2
-  #       done
-  #       # Execute SQL script
-  #       echo "Initializing Trino..."
-  #       trino --server trino:8080 -f /etc/trino/init.sql
-  #   volumes:
-  #     - ./etc-trino:/etc/trino
-  #   env_file:
-  #     - path: docker/.env
-  #       required: true
-  #     - path: docker/.env-local
-  #       required: false
-
-  postgres:
-    image: postgres
-    restart: unless-stopped
-    container_name: postgres
-    hostname: postgres
-    environment:
-      POSTGRES_DB: 'metastore_db'
-      POSTGRES_USER: 'hive'
-      POSTGRES_PASSWORD: 'password'
-    ports:
-      - '5432:5432'
-    volumes:
-      - hive-db:/var/lib/postgresql
-    networks:
-      - hive
-
-  metastore:
-    image: apache/hive:4.0.1
+  trino-init:
+    container_name: trino_init
+    image: trinodb/trino:latest
     depends_on:
-      - postgres
-    restart: unless-stopped
-    container_name: metastore
-    hostname: metastore
-    environment:
-      DB_DRIVER: postgres
-      SERVICE_NAME: 'metastore'
-      SERVICE_OPTS: '-Xmx1G -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver
-                     -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://postgres:5432/metastore_db
-                     -Djavax.jdo.option.ConnectionUserName=hive
-                     -Djavax.jdo.option.ConnectionPassword=password'
-    ports:
-        - '9083:9083'
+      - trino
+    entrypoint: ["/bin/sh", "-c"]
+    command: 
+      - sh
+      - -c
+      - |
+        # Wait for Trino to be ready (after healthcheck)
+        until trino --server trino:8080 --execute "SELECT 1" >/dev/null 2>&1; do
+          echo "Waiting for Trino to be ready..."
+          sleep 2
+        done
+        # Execute SQL script
+        echo "Initializing Trino..."
+        trino --server trino:8080 -f /etc/trino/init.sql
     volumes:
-        - ./hive:/opt/hive/data/warehouse
-    networks:
-      - hive
+      - ./etc-trino:/etc/trino
+    env_file:
+      - path: docker/.env
+        required: true
+      - path: docker/.env-local
+        required: false
 
   superset:
     env_file:
@@ -183,9 +145,3 @@ volumes:
     external: false
   redis:
     external: false
-  hive-db:
-    external: false
-
-networks:
-  hive:
-    name: hive
