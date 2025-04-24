@@ -45,43 +45,62 @@ services:
     volumes:
       - ./etc-trino:/etc/trino
 
-  # trino-init:
-  #   container_name: trino_init
-  #   image: trinodb/trino:latest
-  #   depends_on:
-  #     - trino
-  #     - hivemetastore
-  #   entrypoint: ["/bin/sh", "-c"]
-  #   command: 
-  #     - sh
-  #     - -c
-  #     - |
-  #       # Wait for Trino to be ready (after healthcheck)
-  #       until trino --server trino:8080 --execute "SELECT 1" >/dev/null 2>&1; do
-  #         echo "Waiting for Trino to be ready..."
-  #         sleep 2
-  #       done
-  #       # Execute SQL script
-  #       echo "Initializing Trino..."
-  #       trino --server trino:8080 -f /etc/trino/init.sql
-  #   volumes:
-  #     - ./etc-trino:/etc/trino
-  #   env_file:
-  #     - path: docker/.env
-  #       required: true
-  #     - path: docker/.env-local
-  #       required: false
+  trino-init:
+    container_name: trino_init
+    image: trinodb/trino:latest
+    depends_on:
+      - trino
+      - hivemetastore
+    entrypoint: ["/bin/sh", "-c"]
+    command: 
+      - sh
+      - -c
+      - |
+        # Wait for Trino to be ready (after healthcheck)
+        until trino --server trino:8080 --execute "SELECT 1" >/dev/null 2>&1; do
+          echo "Waiting for Trino to be ready..."
+          sleep 2
+        done
+        # Execute SQL script
+        echo "Initializing Trino..."
+        trino --server trino:8080 -f /etc/trino/init.sql
+    volumes:
+      - ./etc-trino:/etc/trino
+    env_file:
+      - path: docker/.env
+        required: true
+      - path: docker/.env-local
+        required: false
 
-  hive-metastore-db:
-    image: mysql:5.7
+  metastore-db:
+    container_name: metastore-db
+    image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: hive_metastore
       MYSQL_USER: hive
-      MYSQL_PASSWORD: hivepass
+      MYSQL_PASSWORD: hive
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - hive-metastore-data:/var/lib/mysql
-      
+      - metastore-db-data:/var/lib/mysql
+
+  hive-metastore:
+    container_name: hive-metastore
+    image: trinodb/hive-metastore:latest
+    depends_on: [metastore-db]
+    environment:
+      HIVE_METASTORE_DB_TYPE: mysql
+      HIVE_METASTORE_HOST: metastore-db
+      HIVE_METASTORE_PORT: 3306
+      HIVE_METASTORE_DB_NAME: metastore
+      HIVE_METASTORE_USERNAME: hive
+      HIVE_METASTORE_PASSWORD: hive
+      HIVE_METASTORE_SCHEMA: hive_metastore
+      HIVE_S3_ENABLE: "false"
+    ports:
+      - "9083:9083"
+    volumes:
+      - ./hive:/user/hive/warehouse
+
   superset:
     env_file:
       - path: docker/.env # default
@@ -156,5 +175,5 @@ volumes:
     external: false
   redis:
     external: false
-  hive-metastore-data:
+  metastore-db-data:
     external: false
