@@ -111,6 +111,4 @@ messages.mo
 
 cache/
 docker/.env-local
-catalog/*.properties
 etc-trino/config.properties
-etc-trino/jvm.config
