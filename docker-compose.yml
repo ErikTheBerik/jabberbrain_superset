@@ -73,9 +73,14 @@ services:
       MYSQL_PASSWORD: ${METASTORE_DB_PASSWORD}
     volumes:
       - metastore_data:/var/lib/mysql
+    env_file:
+      - path: docker/.env
+        required: true
+      - path: docker/.env-local
+        required: false
 
   hive-metastore:
-    image: bitnami/hive-metastore:latest
+    image: apache/hive:latest
     environment:
       HIVE_METASTORE_DB_HOST: metastore-db
       HIVE_METASTORE_DB_NAME: metastore
