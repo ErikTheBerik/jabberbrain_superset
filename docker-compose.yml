@@ -185,3 +185,7 @@ volumes:
     external: false
   hive-db:
     external: false
+
+networks:
+  hive:
+    name: hive
