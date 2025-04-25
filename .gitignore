@@ -111,4 +111,3 @@ messages.mo
 
 cache/
 docker/.env-local
-etc-trino/config.properties

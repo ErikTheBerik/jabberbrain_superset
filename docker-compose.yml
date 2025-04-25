@@ -43,7 +43,20 @@ services:
     ports:
       - "8050:8080" 
     volumes:
-      - ./etc-trino:/etc/trino
+      - ./trino/coordinator:/etc/trino
+      - ./trino/catalog:/etc/trino/catalog
+
+  trino-worker:
+    image: trinodb/trino:latest
+    restart: unless-stopped
+    deploy:
+      mode: replicated
+      replicas: 4
+    volumes:
+      - ./trino/worker:/etc/trino
+      - ./trino/catalog:/etc/trino/catalog
+    depends_on:
+      - trino
 
   trino-init:
     container_name: trino_init
@@ -61,7 +74,7 @@ services:
       echo "Initializing Trino..."
       trino --server trino:8080 -f /etc/trino/init.sql
     volumes:
-      - ./etc-trino:/etc/trino
+      - ./trino/init.sql:/etc/trino/init.sql:ro
     env_file:
       - path: docker/.env
         required: true
