@@ -36,9 +36,9 @@ services:
     image: trinodb/trino:latest
     restart: unless-stopped
     env_file:
-      - path: docker/.env # default
+      - path: docker/.env
         required: true
-      - path: docker/.env-local # optional override
+      - path: docker/.env-local
         required: false
     ports:
       - "8050:8080" 
@@ -49,6 +49,11 @@ services:
   trino-worker:
     image: trinodb/trino:latest
     restart: unless-stopped
+    env_file:
+      - path: docker/.env
+        required: true
+      - path: docker/.env-local
+        required: false
     deploy:
       mode: replicated
       replicas: 4
