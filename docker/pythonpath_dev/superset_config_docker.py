@@ -1,7 +1,7 @@
 AUTH_ROLE_PUBLIC = 'Public'
 PUBLIC_ROLE_LIKE = 'Public'
 FAB_API_SWAGGER_UI = False
-APP_NAME = "Jabberbrain Dashboards"
+APP_NAME = "jabberBrain Dashboards"
 ENABLE_PROXY_FIX = True
 
 # Specify the App icon
