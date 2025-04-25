@@ -1,27 +1,29 @@
 {
-    "catalogs": [
-      {
-        "user": "report",
-        "catalog": "your_catalog",
-        "allow": true
-      }
-    ],
-    "schemas": [
-      {
-        "user": "report",
-        "catalog": "your_catalog",
-        "schema": ".*",
-        "owner": false
-      }
-    ],
-    "tables": [
-      {
-        "user": "report",
-        "catalog": "your_catalog",
-        "schema": ".*",
-        "table": ".*",
-        "privileges": ["SELECT"]
-      }
-    ]
-  }
-  
+  "catalogs": [
+    {
+      "user": "report",
+      "catalog": "dev",
+      "allow": true
+    },
+    {
+      "user": "report",
+      "catalog": "jb",
+      "allow": true
+    },
+    {
+      "user": "report",
+      "catalog": "memory",
+      "allow": true
+    },
+    {
+      "user": "report",
+      "catalog": "prod",
+      "allow": true
+    },
+    {
+      "user": "admin",
+      "catalog": ".*",
+      "allow": true
+    }
+  ]
+}
