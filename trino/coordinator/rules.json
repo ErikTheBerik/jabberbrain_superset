@@ -24,6 +24,11 @@
       "user": "admin",
       "catalog": ".*",
       "allow": true
+    },
+    {
+      "user": "trino",
+      "catalog": "*",
+      "allow": true
     }
   ]
 }
