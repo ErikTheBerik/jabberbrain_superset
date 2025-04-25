@@ -79,6 +79,8 @@ services:
       echo "Initializing Trino..."
       trino --server trino:8080 -f /etc/trino/init.sql
     volumes:
+      - ./trino/coordinator:/etc/trino
+      - ./trino/catalog:/etc/trino/catalog
       - ./trino/init.sql:/etc/trino/init.sql:ro
     env_file:
       - path: docker/.env
