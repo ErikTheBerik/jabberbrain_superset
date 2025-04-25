@@ -27,7 +27,7 @@
     },
     {
       "user": "trino",
-      "catalog": "*",
+      "catalog": ".*",
       "allow": true
     }
   ]
