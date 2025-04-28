@@ -106,5 +106,5 @@ SELECT
   td.*,
   tf.*
 FROM memory.views.dev_transaction_data AS td
-LEFT JOIN dev-jb.jbdb.chat_transaction_audit AS tf
+LEFT JOIN dev_jb.jbdb.chat_transaction_audit AS tf
   ON tf.jbse_chat_transaction_id = td.transaction_id;
